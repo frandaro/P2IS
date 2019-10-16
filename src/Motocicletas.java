@@ -5,16 +5,15 @@ import java.util.ArrayList;
 
 
 public class Motocicletas{
-    private int propietario, cc, idmoto;
+    private int propietario, cc, idmoto, coste, otros_gastos;
     private String matricula, marca, modelo;
-    private float coste;
     
     
     public Motocicletas(){
         
     }
     
-    public Motocicletas (int num, int duenyo, int c_c, String mat, String mark, String model, float precio){
+    public Motocicletas (int num, int duenyo, int c_c, String mat, String mark, String model, int precio, int og){
         
         idmoto = num;
         propietario = duenyo;
@@ -23,10 +22,19 @@ public class Motocicletas{
         marca = mark;
         modelo = model;
         coste = precio;
+        otros_gastos = og;
 }
     
-    public float getCoste(){
+    public void IncrementarGastos(int mas){
+        otros_gastos += mas;
+    }
+    
+    public int getCoste(){
         return coste;
+    }
+    
+    public int getOtrosGastos(){
+        return otros_gastos;
     }
     
     public int getNumMotocicleta(){

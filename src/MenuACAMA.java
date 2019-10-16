@@ -11,7 +11,7 @@ public class MenuACAMA
 {
  
     private String nombre, matricula, marca, modelo;
-    private int num_motos,coste, cc, cont = 0, cont2 = 6, cont3 = 0, propietario, motocedida, nombre1, nombre2, opcion = -1, importemax;
+    private int num_motos,coste, cc, cont = 0, cont2 = 6, cont3 = 0, propietario, motocedida, nombre1, nombre2, opcion = -1, importemax, inc_og, otrosg;
     private Miembro miembro = new Miembro();
     Fecha fecha = new Fecha();
     ArrayList<Motocicletas> todaslasmotos = new ArrayList<Motocicletas>();
@@ -19,6 +19,7 @@ public class MenuACAMA
     ArrayList<Miembro> miembros = new ArrayList<Miembro>();
     Cesion cesion_aux = new Cesion();
     Motocicletas moto_aux = new Motocicletas();
+    
     
     
     /**
@@ -30,12 +31,12 @@ public class MenuACAMA
         /**
          * Motocicletas de la asociacion
          */
-        todaslasmotos.add(new Motocicletas(1, 0, 125, " ", "Vespa", "Primavera", 2500));
-        todaslasmotos.add(new Motocicletas(2, 0, 125, " ", "Vespa", "Primavera", 2500));
-        todaslasmotos.add(new Motocicletas(3, 0, 70, " ", "Motobeanae", "Poney AG2", 2300));
-        todaslasmotos.add(new Motocicletas(4, 0, 200, " ", "Bultaco", "Primavera", 3800));
-        todaslasmotos.add(new Motocicletas(5, 0, 75, " ", "Guzzi", "Cardelino 73", 1200));
-        todaslasmotos.add(new Motocicletas(6, 0, 49, " ", "Ducati", "mini", 4000));
+        todaslasmotos.add(new Motocicletas(1, 0, 125, " ", "Vespa", "Primavera", 2500, 0));
+        todaslasmotos.add(new Motocicletas(2, 0, 125, " ", "Vespa", "Primavera", 2500, 0));
+        todaslasmotos.add(new Motocicletas(3, 0, 70, " ", "Motobeanae", "Poney AG2", 2300, 0));
+        todaslasmotos.add(new Motocicletas(4, 0, 200, " ", "Bultaco", "Primavera", 3800, 0));
+        todaslasmotos.add(new Motocicletas(5, 0, 75, " ", "Guzzi", "Cardelino 73", 1200, 0));
+        todaslasmotos.add(new Motocicletas(6, 0, 49, " ", "Ducati", "mini", 4000, 0));
           
         Scanner option = new Scanner(System.in);
         Scanner cadena = new Scanner(System.in);
@@ -57,6 +58,7 @@ public class MenuACAMA
             System.out.println("5. Listar todas las motos");
             System.out.println("6. Mostrar las cesiones realizadas");
             System.out.println("7. Salir del programa");
+            System.out.println("8. Incrementar otros gastos a una moto");
             
             opcion = option.nextInt();
             
@@ -83,11 +85,13 @@ public class MenuACAMA
                         modelo = cadena.nextLine();
                         System.out.println("Dame el coste de la moto: ");
                         coste = option.nextInt();
+                        System.out.println("Dame el coste de otros gastos de la moto: ");
+                        otrosg = option.nextInt();
                         miembro.aumentarImporte(coste);
                         if (!(miembro.calcularImporte() >= importemax))
                         {
-                        miembro.anadirMoto(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste));
-                        todaslasmotos.add(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste));
+                        miembro.anadirMoto(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste, otrosg));
+                        todaslasmotos.add(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste, otrosg));
                         cont2++; //Añadimos una motocicleta al contador
                         }
                         else 
@@ -112,12 +116,14 @@ public class MenuACAMA
                         coste = option.nextInt();
                         System.out.println("Quien va a ser el primer propietario?(Dame su codigo): ");
                         propietario = option.nextInt();
+                        System.out.println("Dame el coste de otros gastos de la moto: ");
+                        otrosg = option.nextInt();
                         
-                        if ((miembros.get(propietario - 1).getCoste() + coste) >= 6000.0)
+                        if ((miembros.get(propietario - 1).getCoste() + coste) >= importemax)
                         System.out.println("NO se puede anadir la Motocicleta porque el propietario supera el limite de 6000€ permitido ");    
                         else{
                             cont2++;
-                            todaslasmotos.add(new Motocicletas(cont2, propietario, cc, marca, marca, modelo, coste)); 
+                            todaslasmotos.add(new Motocicletas(cont2, propietario, cc, marca, marca, modelo, coste, otrosg)); 
                             
                         }
                         
@@ -137,7 +143,7 @@ public class MenuACAMA
                     fecha.setMes(option.nextInt());
                     System.out.println("Que anyo se realiza la cesion?:");
                     fecha.setAño(option.nextInt());
-                    if ((miembros.get(nombre2 - 1).getCoste() + todaslasmotos.get(motocedida).getCoste()) >= 6000.0)
+                    if ((miembros.get(nombre2 - 1).getCoste() + todaslasmotos.get(motocedida).getCoste()) >= importemax)
                     System.out.println("NO se puede anadir la Motocicleta porque el propietario supera el limite de 6000€ permitido ");    
                     else
                     {
@@ -167,7 +173,7 @@ public class MenuACAMA
                        String Cadena_idmoto = String.format("%03d", moto_aux.getNumMotocicleta());
                        System.out.println(Cadena_idmoto);
                        System.out.println(moto_aux.getMatricula()+ "\t" + moto_aux.getMarca() + "\t" + moto_aux.getModelo() + "\t" + moto_aux.getCC() + "CC" + "\t"+ moto_aux.getDueño());
-                       System.out.println(moto_aux.getCoste());
+                       System.out.println(moto_aux.getCoste() + moto_aux.getOtrosGastos());
                        System.out.println("\n"); 
                     }
                     
@@ -224,6 +230,13 @@ public class MenuACAMA
             
             break;
             
+            case 8:
+                System.out.println("Que incremento quieres añadir a otros gastos?: ");
+                inc_og = option.nextInt();
+                System.out.println("Dame id de la moto a la que quieres incrementar: ");
+                todaslasmotos.get(option.nextInt() - 1).IncrementarGastos(inc_og);
+            break;   
+                
             default:
                 System.err.println("Caracter no reconocido, vuelva a intentarlo por favor");
             break;

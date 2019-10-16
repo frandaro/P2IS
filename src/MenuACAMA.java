@@ -9,11 +9,10 @@ import java.util.Scanner;
 
 public class MenuACAMA
 {
-    
+ 
     private String nombre, matricula, marca, modelo;
-    private int num_motos, cc, cont = 0, cont2 = 6, cont3 = 0, propietario, motocedida, nombre1, nombre2, opcion = -1;
+    private int num_motos,coste, cc, cont = 0, cont2 = 6, cont3 = 0, propietario, motocedida, nombre1, nombre2, opcion = -1, importemax;
     private Miembro miembro = new Miembro();
-    private float coste;
     Fecha fecha = new Fecha();
     ArrayList<Motocicletas> todaslasmotos = new ArrayList<Motocicletas>();
     ArrayList<Cesion> cesiones = new ArrayList<Cesion>();
@@ -44,6 +43,10 @@ public class MenuACAMA
         /**
         * Bucle while que funciona como menu
         */
+        
+        System.out.println("\nDame el importe máximo de cada miembro: ");
+        importemax = option.nextInt();
+        
         while (opcion != -2)
         {
             
@@ -79,14 +82,19 @@ public class MenuACAMA
                         System.out.println("Dame el modelo de moto: ");
                         modelo = cadena.nextLine();
                         System.out.println("Dame el coste de la moto: ");
-                        coste = option.nextFloat();
-                        cont2++; //Añadimos una motocicleta al contador
-                        
+                        coste = option.nextInt();
+                        miembro.aumentarImporte(coste);
+                        if (!(miembro.calcularImporte() >= importemax))
+                        {
                         miembro.anadirMoto(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste));
-                        todaslasmotos.add(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste));   
+                        todaslasmotos.add(new Motocicletas(cont2, cont, cc, marca, marca, modelo, coste));
+                        cont2++; //Añadimos una motocicleta al contador
+                        }
+                        else 
+                         System.err.println("No se ha podido añadir la moto por llegar al importe maximo");
+                         miembro.aumentarImporte(-coste);
                     } 
                     
-                    miembro.calcularImporte();
                     miembros.add(miembro);
                 break;
                     
@@ -101,7 +109,7 @@ public class MenuACAMA
                         System.out.println("Dame el modelo de moto: ");
                         modelo = cadena.nextLine();
                         System.out.println("Dame el coste de la moto: ");
-                        coste = option.nextFloat();
+                        coste = option.nextInt();
                         System.out.println("Quien va a ser el primer propietario?(Dame su codigo): ");
                         propietario = option.nextInt();
                         

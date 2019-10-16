@@ -4,7 +4,7 @@ public class Miembro{
     private int idmiembro;
     private String nombre;
     private int num_motos;
-    private float importe;
+    private int importe = 0;
     private ArrayList<Motocicletas> motos_en_posesion = new ArrayList<Motocicletas>();
     
 
@@ -18,9 +18,12 @@ public class Miembro{
     idmiembro = cont;
     }
     
-    public void calcularImporte(){
-        for(int i = 0; i < num_motos; i++)
-            importe += motos_en_posesion.get(i).getCoste();
+    public int calcularImporte(){
+        return importe;
+    }
+    
+    public void aumentarImporte (int mas){
+        importe += mas;
     }
     
     public int getIdMiembro(){

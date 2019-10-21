@@ -4,7 +4,7 @@ public class Miembro{
     private int idmiembro;
     private String nombre;
     private int num_motos;
-    private int importe = 0;
+    private int importe = 0, cesiones = 0;
     private ArrayList<Motocicletas> motos_en_posesion = new ArrayList<Motocicletas>();
     
 
@@ -57,6 +57,18 @@ public class Miembro{
     
     public int getIdMoto(int i){
         return (motos_en_posesion.get(i)).getNumMotocicleta();
+    }
+    
+    public int getCesiones(){
+        return cesiones;
+    }
+    
+    public void setCesiones(int c){
+        cesiones = c;
+    }
+    
+    public void aumentarCesiones(){
+        cesiones++;
     }
     
     

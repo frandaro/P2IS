@@ -35,7 +35,7 @@ public class Miembro{
     }
     
     public void anadirMoto(Motocicletas moto){
-       motos_en_posesion.add(moto); 
+       motos_en_posesion.add(moto);
     }
     
     public void quitarMoto(int num_m){
@@ -45,6 +45,7 @@ public class Miembro{
     public int numMoto (){
         return motos_en_posesion.size();
     }
+
     
     public float getCoste(){
         return importe;
@@ -54,6 +55,9 @@ public class Miembro{
         return nombre;
     }
     
+    public int getIdMoto(int i){
+        return (motos_en_posesion.get(i)).getNumMotocicleta();
+    }
     
     
     

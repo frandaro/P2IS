@@ -11,8 +11,9 @@ public class MenuACAMA
 {
  
     private String nombre, matricula, marca, modelo;
-    private int num_motos,coste, cc, cont = 0, cont2 = 6, cont3 = 0, propietario, motocedida, nombre1, nombre2, opcion = -1, importemax, inc_og, otrosg;
+    private int num_motos, idmoto_aux, coste, cc, cont = 0, cont2 = 7, cont3 = 0, propietario, motocedida, nombre1, nombre2, opcion = -1, importemax, inc_og, otrosg, eliminar;
     private Miembro miembro = new Miembro();
+    private Miembro miembro_aux = new Miembro();
     Fecha fecha = new Fecha();
     ArrayList<Motocicletas> todaslasmotos = new ArrayList<Motocicletas>();
     ArrayList<Cesion> cesiones = new ArrayList<Cesion>();
@@ -59,6 +60,7 @@ public class MenuACAMA
             System.out.println("6. Mostrar las cesiones realizadas");
             System.out.println("7. Salir del programa");
             System.out.println("8. Incrementar otros gastos a una moto");
+            System.out.println("9. Eliminar miembro");
             
             opcion = option.nextInt();
             
@@ -143,12 +145,20 @@ public class MenuACAMA
                     fecha.setMes(option.nextInt());
                     System.out.println("Que anyo se realiza la cesion?:");
                     fecha.setAño(option.nextInt());
+                    try{
                     if ((miembros.get(nombre2 - 1).getCoste() + todaslasmotos.get(motocedida).getCoste()) >= importemax)
-                    System.out.println("NO se puede anadir la Motocicleta porque el propietario supera el limite de 6000€ permitido ");    
+                    System.out.println("NO se puede anadir la Motocicleta porque el propietario supera el limite permitido ");    
                     else
                     {
                     cont3++;
                     cesiones.add(new Cesion(cont3 ,nombre1, nombre2, fecha, motocedida));
+                    for(int i = 0; i < miembros.get(nombre1 - 1).numMoto(); i++)
+                        if( miembros.get(nombre1 - 1).getIdMoto(i) == motocedida)
+                            miembros.get(nombre1 - 1).quitarMoto(i);
+                    miembros.get(nombre2 - 1).anadirMoto(todaslasmotos.get(motocedida - 1));
+                    }
+                    }catch(Exception e){
+                        System.err.println("Error: No se pudo registrar la cesion");
                     }
                              
                 break;
@@ -156,10 +166,11 @@ public class MenuACAMA
                 case 4: //Listar en pantalla los miembros con motos en posesión 
                     for(int i = 0; i < miembros.size();i++)
                     {
-                        if(miembros.get(i).numMoto() > 0)
+                        for(int j = 0; j < miembros.get(i).numMoto(); j++)
                         {
                             String Cadena_idmiembro = String.format("%03d", miembros.get(i).getIdMiembro());
-                            System.out.println(Cadena_idmiembro + "\t" + miembros.get(i).getNombre());
+                            String Cadena_idmoto = String.format("%03d", miembros.get(i).getIdMoto(j));
+                            System.out.println(Cadena_idmiembro + "\t" + miembros.get(i).getNombre() +"\n\t" + Cadena_idmoto + "\t" + todaslasmotos.get(miembros.get(i).getIdMoto(j) - 1).getMarca());
                             System.out.println("\n");
                         }     
                     }
@@ -209,7 +220,7 @@ public class MenuACAMA
                             String Cadena_idmiembro = String.format("%03d", miembros.get(i).getIdMiembro());
                             bw.write(Cadena_idmiembro + "\t" + miembros.get(i).getNombre());
                             bw.write("\n");
-                            bw.close();
+                            
                         } 
                     }
                     
@@ -223,19 +234,53 @@ public class MenuACAMA
                        bw.write("Realizada en la fecha: " + cesion_aux.getFecha().getDia()+ "/" + cesion_aux.getFecha().getMes()+ "/" + cesion_aux.getFecha().getAño());
                        
                        bw.write("\n");
-                       bw.close();
+                       
                     }
+                    
 
                     System.exit(0); //El programa deja de funcionar
             
             break;
             
-            case 8:
+            case 8: //Incrementar otros gastos
                 System.out.println("Que incremento quieres añadir a otros gastos?: ");
                 inc_og = option.nextInt();
                 System.out.println("Dame id de la moto a la que quieres incrementar: ");
                 todaslasmotos.get(option.nextInt() - 1).IncrementarGastos(inc_og);
-            break;   
+            break;  
+            
+            case 9: //Eliminar miembros
+                System.out.println("Dame miembro a eliminar: ");
+                eliminar = option.nextInt();
+                miembro_aux = miembros.get(eliminar - 1);
+                for(int i = 0; i < miembro_aux.numMoto(); i++)
+                {
+                    idmoto_aux = miembro_aux.getIdMoto(i);
+                    System.out.println("Dame el id del usuario que va a recibir cedida la motocicleta con id " + miembro_aux.getIdMoto(i) + " de " + miembro_aux.getNombre());
+                    nombre1 = option.nextInt();
+                    System.out.println("Que dia se realiza la cesion?:");
+                    fecha.setDia(option.nextInt());
+                    System.out.println("Que mes se realiza la cesion?:");
+                    fecha.setMes(option.nextInt());
+                    System.out.println("Que anyo se realiza la cesion?:");
+                    fecha.setAño(option.nextInt());
+                    try{
+                    if ((miembros.get(nombre1 - 1).getCoste() + todaslasmotos.get(miembro_aux.getIdMoto(i) - 1).getCoste()) >= importemax)
+                    System.out.println("NO se puede anadir la Motocicleta porque el propietario supera el limite permitido ");    
+                    else
+                    {
+                    cont3++;
+                    cesiones.add(new Cesion(cont3 ,miembro_aux.getIdMiembro(), nombre1, fecha, miembro_aux.getIdMoto(i)));
+                    miembros.get(nombre1 - 1).anadirMoto(todaslasmotos.get(miembro_aux.getIdMoto(i) - 1));
+                    miembros.get(eliminar - 1).quitarMoto(i);
+                    }
+                    }catch(Exception e){
+                        System.err.println("Error: No se pudo registrar la cesion");
+                    }
+                }
+                miembros.remove(eliminar - 1);
+                
+            break; 
                 
             default:
                 System.err.println("Caracter no reconocido, vuelva a intentarlo por favor");
